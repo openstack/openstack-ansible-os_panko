@@ -1,0 +1,49 @@
+---
+# Copyright 2015, Rackspace US, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+- name: Copy panko config
+  config_template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ panko_system_user_name }}"
+    group: "{{ panko_system_group_name }}"
+    mode: "0644"
+    config_overrides: "{{ item.config_overrides }}"
+    config_type: "{{ item.config_type }}"
+  with_items:
+    - src: "panko.conf.j2"
+      dest: "/etc/panko/panko.conf"
+      config_overrides: "{{ panko_panko_conf_overrides }}"
+      config_type: "ini"
+    - src: "api_paste.ini.j2"
+      dest: "/etc/panko/api_paste.ini"
+      config_overrides: "{{ panko_api_paste_ini_overrides }}"
+      config_type: "ini"
+    - src: "policy.json.j2"
+      dest: "/etc/panko/policy.json-{{ panko_venv_tag }}"
+      config_overrides: "{{ panko_policy_overrides }}"
+      config_type: "json"
+  notify:
+    - Restart web server
+
+- name: Drop panko API WSGI Configs
+  template:
+    src: panko-api-wsgi.py.j2
+    dest: /var/www/cgi-bin/panko/panko-api
+    owner: "{{ panko_system_user_name }}"
+    group: "{{ panko_system_group_name }}"
+    mode: "0755"
+  notify:
+    - Restart web server

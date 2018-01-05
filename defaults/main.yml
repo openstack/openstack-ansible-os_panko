@@ -1,0 +1,137 @@
+---
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+## Verbosity Options
+debug: False
+
+# Set the package install state for distribution and pip packages
+# Options are 'present' and 'latest'
+panko_package_state: "latest"
+panko_pip_package_state: "latest"
+
+## Toggle developer mode
+panko_developer_mode: false
+
+## The git source/branch
+panko_git_repo: https://git.openstack.org/openstack/panko
+panko_git_install_branch: stable/pike
+
+## The packages to build from source (used in developer mode)
+panko_developer_constraints:
+  - "git+{{ panko_git_repo }}@{{ panko_git_install_branch }}#egg=panko"
+
+# Name of the virtual env to deploy into
+panko_venv_tag: untagged
+panko_bin: "/openstack/venvs/panko-{{ panko_venv_tag }}/bin"
+
+# venv_download, even when true, will use the fallback method of building the
+# venv from scratch if the venv download fails.
+panko_venv_download: "{{ not panko_developer_mode | bool }}"
+# URL of the pre-built virtualenv
+panko_venv_download_url: http://127.0.0.1/venvs/untagged/ubuntu/panko.tgz
+
+## System info
+panko_system_user_name: panko
+panko_system_group_name: panko
+panko_system_shell: /bin/false
+panko_system_comment: panko system user
+panko_system_user_home: "/var/lib/{{ panko_system_user_name }}"
+
+## DB info
+panko_database_name: panko
+panko_database_user: panko
+panko_db_type: "mysql+pymysql"
+panko_db_address: localhost
+panko_connection_string: "{{ panko_db_type }}://{{ panko_database_user }}:{{ panko_container_db_password }}@{{ panko_db_address }}/{{ panko_database_name }}?charset=utf8"
+
+
+## Apache setup
+panko_apache_log_level: info
+panko_apache_servertokens: "Prod"
+panko_apache_serversignature: "Off"
+panko_wsgi_threads: 10
+panko_wsgi_processes_max: 16
+panko_wsgi_processes: "{{ [[ansible_processor_vcpus|default(1), 1] | max * 2, panko_wsgi_processes_max] | min }}"
+
+#panko services info
+panko_role_name: admin
+
+## Service Type and Data
+panko_service_region: RegionOne
+panko_service_endpoint_type: internalURL
+panko_service_name: panko
+panko_service_port: 8777
+panko_service_proto: http
+panko_service_type: event
+panko_service_description: "Openstack Panko Service"
+panko_service_project_domain_id: default
+panko_service_user_domain_id: default
+panko_service_user_name: panko
+panko_keystone_auth_plugin: "{{ panko_keystone_auth_type }}"
+panko_keystone_auth_type: password
+panko_service_tenant_name: service
+panko_service_project_name: service
+panko_service_publicuri: "{{ panko_service_proto }}://{{ external_lb_vip_address }}:{{ panko_service_port }}"
+panko_service_publicurl: "{{ panko_service_publicuri }}"
+panko_service_internaluri: "{{ panko_service_proto }}://{{ internal_lb_vip_address }}:{{ panko_service_port }}"
+panko_service_internalurl: "{{ panko_service_internaluri }}"
+panko_service_adminuri: "{{ panko_service_proto }}://{{ internal_lb_vip_address }}:{{ panko_service_port }}"
+panko_service_adminurl: "{{ panko_service_adminuri }}"
+
+panko_service_in_ldap: false
+
+# panko packages that must be installed before anything else
+panko_requires_pip_packages:
+  - virtualenv
+  - virtualenv-tools
+  - python-keystoneclient # Keystoneclient needed to OSA keystone lib
+  - httplib2
+
+# Common pip packages
+panko_pip_packages:
+  # The following constraints are taken from the setup.cfg
+  # file in the panko project. This is due to the fact that the repo-build
+  # role does not respect constraints specified in setup.cfg files.
+  # https://github.com/openstack/panko/blob/master/setup.cfg#L35-L38
+  - alembic>=0.7.2
+  - panko
+  - ceilometermiddleware
+  - cryptography
+  - gnocchiclient
+  - PyMySQL>=0.6.2
+  - python-ceilometerclient
+  - python-memcached
+  - sqlalchemy>=0.9.7
+  - sqlalchemy-utils
+  - warlock
+
+
+
+panko_required_secrets:
+  - memcached_encryption_key
+  - panko_container_db_password
+  - panko_rabbitmq_password
+  - panko_service_password
+
+install_test_packages: False
+
+# This variable is used by the repo_build process to determine
+# which host group to check for members of before building the
+# pip packages required by this role. The value is picked up
+# by the py_pkgs lookup.
+panko_role_project_group: panko_all
+
+## Tunable overrides
+panko_policy_overrides: {}
+panko_panko_conf_overrides: {}
+panko_api_paste_ini_overrides: {}

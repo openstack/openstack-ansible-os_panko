@@ -1,0 +1,26 @@
+#{{ ansible_managed}}
+
+[DEFAULT]
+# Disable stderr logging
+use_stderr = False
+debug = {{ debug }}
+
+[database]
+connection = {{ panko_connection_string }}
+
+[keystone_authtoken]
+auth_type = {{ panko_keystone_auth_plugin }}
+auth_url = {{ keystone_service_adminurl }}
+project_domain_name = {{ panko_service_project_domain_id }}
+user_domain_name = {{ panko_service_user_domain_id }}
+project_name = {{ panko_service_project_name }}
+username = {{ panko_service_user_name }}
+password = {{ panko_service_password }}
+
+memcached_servers = {{ memcached_servers }}
+
+token_cache_time = 300
+
+# if your memcached server is shared, use these settings to avoid cache poisoning
+memcache_security_strategy = ENCRYPT
+memcache_secret_key = {{ memcached_encryption_key }}

@@ -1,0 +1,59 @@
+---
+# Copyright 2015, Rackspace US, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+- name: Fail if our required secrets are not present
+  fail:
+    msg: "Please set the {{ item }} variable prior to applying this role."
+  when: (item is undefined) or (item is none)
+  with_items: "{{ panko_required_secrets }}"
+  tags:
+    - always
+
+- name: Gather variables for each operating system
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+    - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+    - "{{ ansible_distribution | lower }}.yml"
+    - "{{ ansible_os_family | lower }}.yml"
+  tags:
+    - always
+
+- include: panko_pre_install.yml
+  tags:
+    - panko-install
+
+- include: panko_install.yml
+  tags:
+    - panko-install
+
+- include: panko_post_install.yml
+  tags:
+    - panko-config
+
+- include: panko_db_setup.yml
+  when: inventory_hostname == groups['panko_all'][0]
+  tags:
+    - panko-config
+
+- include: panko_apache.yml
+  tags:
+    - panko-config
+
+- include: panko_service_setup.yml
+  when: inventory_hostname == groups['panko_api'][0]
+  tags:
+    - panko-config
