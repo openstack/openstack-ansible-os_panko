@@ -10,17 +10,13 @@ Team and repository tags
 OpenStack panko
 ##############
 
-Ansible role that installs and configures OpenStack panko as the alarm
+Ansible role that installs and configures OpenStack panko as the event
 functionality of Telemetry.
 
 This role will install the following:
     * panko-api
-    * panko-listener
-    * panko-evaluator
-    * panko-notifier
 
-The role will configure panko to use MongoDB for data storage, but does
-not install or configure MongoDB.
+The role will configure panko to use mariaDB for event storage
 
 Default Variables
 =================
@@ -43,11 +39,6 @@ To use this role, define the following variables:
    # Needed for panko to talk to memcached
    memcached_servers: 127.0.0.1
    memcached_encryption_key: "some_key"
-   # Needed for panko to locate and connect to the RabbitMQ cluster
-   panko_rabbitmq_password: "secrete"
-   rabbitmq_servers: "10.100.100.2"
-   rabbitmq_use_ssl: true
-   rabbitmq_port: 5671
    # Needed to setup the panko service in Keystone
    keystone_admin_user_name: admin
    keystone_admin_tenant_name: admin
