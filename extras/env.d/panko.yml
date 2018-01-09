@@ -1,6 +1,4 @@
 ---
-# Copyright 2015, Rackspace US, Inc.
-#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -13,15 +11,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Setup the host
-- include: common/test-setup-host.yml
+component_skel:
+  panko_api:
+    belongs_to:
+      - panko_all
 
-# Install MariaDB
-- include: common/test-install-infra.yml
+container_skel:
+  panko_container:
+    belongs_to:
+      - event-infra_containers
+    contains:
+      - panko_api
+    properties:
+      service_name: panko
 
-# Install Keystone
-- include: common/test-install-keystone.yml
+physical_skel:
+  event-infra_containers:
+    belongs_to:
+      - all_containers
+  event-infra_hosts:
+    belongs_to:
+      - hosts
 
-# Install panko
-- include: test-install-panko.yml
 

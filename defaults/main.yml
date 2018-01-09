@@ -99,10 +99,6 @@ panko_requires_pip_packages:
 
 # Common pip packages
 panko_pip_packages:
-  # The following constraints are taken from the setup.cfg
-  # file in the panko project. This is due to the fact that the repo-build
-  # role does not respect constraints specified in setup.cfg files.
-  # https://github.com/openstack/panko/blob/master/setup.cfg#L35-L38
   - alembic>=0.7.2
   - panko
   - ceilometermiddleware
@@ -120,7 +116,6 @@ panko_pip_packages:
 panko_required_secrets:
   - memcached_encryption_key
   - panko_container_db_password
-  - panko_rabbitmq_password
   - panko_service_password
 
 install_test_packages: False

@@ -1,5 +1,4 @@
 ---
-# Copyright 2015, Rackspace US, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,15 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Setup the host
-- include: common/test-setup-host.yml
-
-# Install MariaDB
-- include: common/test-install-infra.yml
-
-# Install Keystone
-- include: common/test-install-keystone.yml
-
-# Install panko
-- include: test-install-panko.yml
-
+panko_service_region: "{{ service_region }}"
+panko_galera_user: panko
+panko_galera_database: panko
+panko_galera_address: "{{ internal_lb_vip_address }}"
+panko_connection_string: "mysql+pymysql://{{ panko_galera_user }}:{{ panko_container_db_password }}@{{ panko_galera_address }}/{{ panko_galera_database }}?charset=utf8"

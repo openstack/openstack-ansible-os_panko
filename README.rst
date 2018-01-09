@@ -32,7 +32,6 @@ To use this role, define the following variables:
 
 .. code-block:: yaml
 
-   # Needed for panko to talk to MongoDB
    panko_container_db_password: "secrete"
    # Password used for Keystone panko service user
    panko_service_password: "secrete"

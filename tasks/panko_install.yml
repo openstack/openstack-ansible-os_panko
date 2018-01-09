@@ -95,7 +95,6 @@
     dest: "{{ panko_bin | dirname }}"
     copy: "no"
   when: panko_get_venv | changed
-  notify: Restart panko services
 
 - name: Install pip packages
   pip:
@@ -112,7 +111,6 @@
   retries: 5
   delay: 2
   when: panko_get_venv | failed or panko_get_venv | skipped
-  notify: Restart panko services
 
 - name: CentOS remove python from path first
   file:

@@ -1,0 +1,4 @@
+- name: os_panko
+  scm: git
+  src: https://github.com/b3lab/openstack-ansible-os_panko.git
+  version: stable/pike

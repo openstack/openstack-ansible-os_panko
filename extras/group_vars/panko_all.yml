@@ -1,5 +1,4 @@
 ---
-# Copyright 2015, Rackspace US, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,15 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Setup the host
-- include: common/test-setup-host.yml
 
-# Install MariaDB
-- include: common/test-install-infra.yml
+panko_service_in_ldap: "{{ service_ldap_backend_enabled }}"
+panko_service_publicuri: "{{ openstack_service_publicuri_proto|default(panko_service_proto) }}://{{ external_lb_vip_address }}:{{ panko_service_port }}"
 
-# Install Keystone
-- include: common/test-install-keystone.yml
+# Ensure that the package state matches the global setting
+panko_package_state: "{{ package_state }}"
 
-# Install panko
-- include: test-install-panko.yml
-
+# venv fetch configuration
+panko_venv_tag: "{{ venv_tag }}"
+panko_venv_download_url: "{{ venv_base_download_url }}/panko-{{ openstack_release }}-{{ ansible_architecture | lower }}.tgz"
