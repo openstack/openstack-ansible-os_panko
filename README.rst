@@ -8,7 +8,7 @@ Team and repository tags
 .. Change things from this point on
 
 OpenStack panko
-##############
+###############
 
 Ansible role that installs and configures OpenStack panko as the event
 functionality of Telemetry.
