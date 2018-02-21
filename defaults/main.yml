@@ -24,7 +24,7 @@ panko_developer_mode: false
 
 ## The git source/branch
 panko_git_repo: https://git.openstack.org/openstack/panko
-panko_git_install_branch: stable/pike
+panko_git_install_branch: master
 
 ## The packages to build from source (used in developer mode)
 panko_developer_constraints:

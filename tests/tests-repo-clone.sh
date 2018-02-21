@@ -96,7 +96,7 @@ elif [[ ! -d tests/common ]]; then
     # Otherwise we're clearly not in zuul or using a previously setup
     # repo in some way, so just clone it from upstream.
     else
-        git clone -b stable/pike \
+        git clone \
             https://git.openstack.org/openstack/openstack-ansible-tests \
             ${WORKING_DIR}/tests/common
     fi
@@ -110,7 +110,7 @@ fi
 # tests repo are not supported.
 if [[ "${CLONE_UPGRADE_TESTS}" == "yes" ]]; then
     if [[ ! -d "${WORKING_DIR}/tests/common/previous" ]]; then
-        git clone -b stable/ocata \
+        git clone -b stable/queens \
             https://git.openstack.org/openstack/openstack-ansible-tests \
             ${WORKING_DIR}/tests/common/previous
   fi
