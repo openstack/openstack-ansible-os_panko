@@ -1,4 +1,4 @@
 #panko service
 panko_git_repo: https://git.openstack.org/openstack/panko
-panko_git_install_branch: stable/pike
+panko_git_install_branch: stable/queens
 panko_git_project_group: panko_all
