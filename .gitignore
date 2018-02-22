@@ -10,11 +10,6 @@
 build/
 dist/
 doc/build/
-.venv
-.idea/
-*.pyc
-*.pdf
-*.egg-info
 
 # Packages #
 ############
