@@ -1,9 +1,8 @@
-================================
- OpenStack-Ansible Release Notes
-================================
+===============================
+OpenStack-Ansible Release Notes
+===============================
 
 .. toctree::
    :maxdepth: 1
 
    unreleased
-   newton
