@@ -120,10 +120,25 @@
     - ansible_pkg_mgr in ['yum', 'dnf']
     - panko_get_venv | changed
 
-- name: Update virtualenv path
-  command: >
-    virtualenv-tools --update-path=auto --reinitialize {{ panko_bin | dirname }}
+# NOTE(odyssey4me):
+# We reinitialize the venv to ensure that the right
+# version of python is in the venv, but we do not
+# want virtualenv to also replace pip, setuptools
+# and wheel so we tell it not to.
+# We do not use --always-copy for CentOS/SuSE due
+# to https://github.com/pypa/virtualenv/issues/565
+- name: Reset virtualenv and update its paths
+  shell: |
+    find {{ panko_bin }} -name \*.pyc -delete
+    sed -si '1s/^.*python.*$/#!{{ panko_bin | replace ('/','\/') }}\/python/' {{ panko_bin }}/*
+    virtualenv {{ panko_bin | dirname }} \
+        {{ (ansible_pkg_mgr == 'apt') | ternary('--always-copy', '') }} \
+        --no-pip \
+        --no-setuptools \
+        --no-wheel
   when: panko_get_venv | changed
+  tags:
+    - skip_ansible_lint
 
 - name: Record the venv tag deployed
   ini_file:
