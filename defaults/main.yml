@@ -93,7 +93,6 @@ panko_service_in_ldap: false
 # panko packages that must be installed before anything else
 panko_requires_pip_packages:
   - virtualenv
-  - virtualenv-tools
   - python-keystoneclient # Keystoneclient needed to OSA keystone lib
   - httplib2
 
