@@ -99,10 +99,11 @@ panko_requires_pip_packages:
 # Common pip packages
 panko_pip_packages:
   - alembic>=0.7.2
-  - panko
   - ceilometermiddleware
   - cryptography
   - gnocchiclient
+  - osprofiler
+  - panko
   - PyMySQL>=0.6.2
   - python-ceilometerclient
   - python-memcached
