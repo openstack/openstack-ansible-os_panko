@@ -53,7 +53,7 @@ To use this role, define the following variables:
 OpenStack-Ansible Panko
 ====================================
 
-Ansible role to install OpenStack Tacker.
+Ansible role to install OpenStack Panko.
 
 Documentation for the project can be found at:
   https://docs.openstack.org/openstack-ansible-os_panko/latest/
