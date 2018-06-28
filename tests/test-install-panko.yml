@@ -17,10 +17,6 @@
   hosts: panko_all
   user: root
   gather_facts: true
-  pre_tasks:
-    - include: common/create-grant-db.yml
-      db_name: "{{ panko_database_name }}"
-      db_password: "{{ panko_container_db_password }}"
   roles:
     - role: "{{ panko_rolename | default('os_panko') }}"
   vars_files:

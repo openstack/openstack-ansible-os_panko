@@ -13,7 +13,3 @@
 # limitations under the License.
 
 panko_service_region: "{{ service_region }}"
-panko_galera_user: panko
-panko_galera_database: panko
-panko_galera_address: "{{ internal_lb_vip_address }}"
-panko_connection_string: "mysql+pymysql://{{ panko_galera_user }}:{{ panko_container_db_password }}@{{ panko_galera_address }}/{{ panko_galera_database }}?charset=utf8"
