@@ -15,7 +15,6 @@
 
 panko_container_db_password: "secrete"
 panko_db_address: "{{ test_galera_host }}"
-panko_database_name: panko
 panko_venv_tag: "testing"
 panko_developer_mode: true
 panko_service_password: "secrete"
