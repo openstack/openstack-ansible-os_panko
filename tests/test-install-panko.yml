@@ -17,7 +17,7 @@
   hosts: panko_all
   user: root
   gather_facts: true
-  roles:
-    - role: "{{ panko_rolename | default('os_panko') }}"
   vars_files:
     - common/test-vars.yml
+  roles:
+    - role: "os_panko"
