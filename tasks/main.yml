@@ -32,28 +32,28 @@
   tags:
     - always
 
-- include: panko_pre_install.yml
+- include_tasks: panko_pre_install.yml
   tags:
     - panko-install
 
-- include: panko_install.yml
+- include_tasks: panko_install.yml
   tags:
     - panko-install
 
-- include: panko_post_install.yml
+- include_tasks: panko_post_install.yml
   tags:
     - panko-config
 
-- include: panko_db_setup.yml
+- include_tasks: panko_db_setup.yml
   when: inventory_hostname == groups['panko_all'][0]
   tags:
     - panko-config
 
-- include: panko_apache.yml
+- include_tasks: panko_apache.yml
   tags:
     - panko-config
 
-- include: panko_service_setup.yml
+- include_tasks: panko_service_setup.yml
   when: inventory_hostname == groups['panko_api'][0]
   tags:
     - panko-config
