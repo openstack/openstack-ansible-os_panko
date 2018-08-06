@@ -1,3 +1,4 @@
+---
 - name: Install panko services
   hosts: panko_all
   user: root
