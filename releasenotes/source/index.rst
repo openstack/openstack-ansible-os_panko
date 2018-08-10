@@ -6,5 +6,6 @@ OpenStack-Ansible Release Notes
    :maxdepth: 1
 
    unreleased
+   rocky
    queens
    pike
