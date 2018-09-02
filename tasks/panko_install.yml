@@ -13,31 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Install distro packages
-  package:
-    name: "{{ item }}"
-    state: "{{ panko_package_state }}"
-    update_cache: "{{ (ansible_pkg_mgr in ['apt', 'zypper']) | ternary('yes', omit) }}"
-    cache_valid_time: "{{ (ansible_pkg_mgr == 'apt') | ternary(cache_timeout, omit) }}"
-  register: install_packages
-  until: install_packages is success
-  retries: 5
-  delay: 2
-  with_items: "{{ panko_distro_packages }}"
-
-- name: Install distro packages for testing
-  package:
-    name: "{{ item }}"
-    state: "{{ panko_package_state }}"
-    update_cache: "{{ (ansible_pkg_mgr in ['apt', 'zypper']) | ternary('yes', omit) }}"
-    cache_valid_time: "{{ (ansible_pkg_mgr == 'apt') | ternary(cache_timeout, omit) }}"
-  register: install_packages
-  until: install_packages is success
-  retries: 5
-  delay: 2
-  with_items: "{{ panko_test_distro_packages }}"
-  when: install_test_packages|bool
-
+# TODO(odyssey4me):
+# This can be simplified once all the roles are using
+# python_venv_build. We can then switch to using a
+# set of constraints in pip.conf inside the venv,
+# perhaps prepared by giving a giving a list of
+# constraints to the role.
 - name: Create developer mode constraint file
   copy:
     dest: "/opt/developer-pip-constraints.txt"
@@ -47,89 +28,23 @@
       {% endfor %}
   when: panko_developer_mode | bool
 
-- name: Retrieve checksum for venv download
-  uri:
-    url: "{{ panko_venv_download_url | replace('tgz', 'checksum') }}"
-    return_content: yes
-  register: panko_venv_checksum
-  when: panko_venv_download | bool
-
-- name: Attempt venv download
-  get_url:
-    url: "{{ panko_venv_download_url }}"
-    dest: "/var/cache/{{ panko_venv_download_url | basename }}"
-    checksum: "sha1:{{ panko_venv_checksum.content | trim }}"
-  register: panko_get_venv
-  when: panko_venv_download | bool
-
-- name: Remove existing venv
-  file:
-    path: "{{ panko_bin | dirname }}"
-    state: absent
-  when: panko_get_venv  is changed
-
-- name: Create panko venv dir
-  file:
-    path: "{{ panko_bin | dirname }}"
-    state: directory
-    mode: "0755"
-  register: panko_venv_dir
-  when: panko_get_venv  is changed
-
-- name: Unarchive pre-built venv
-  unarchive:
-    src: "/var/cache/{{ panko_venv_download_url | basename }}"
-    dest: "{{ panko_bin | dirname }}"
-    copy: "no"
-  when: panko_get_venv  is changed
-
-- name: Install pip packages
-  pip:
-    name: "{{ panko_pip_packages }}"
-    state: "{{ panko_pip_package_state }}"
-    virtualenv: "{{ panko_bin | dirname }}"
-    virtualenv_site_packages: "no"
-    extra_args: >-
-      {{ panko_developer_mode | ternary(pip_install_developer_constraints | default('--constraint /opt/developer-pip-constraints.txt'), '') }}
-      {{ (pip_install_upper_constraints is defined) | ternary('--constraint ' + pip_install_upper_constraints | default(''),'') }}
-      {{ pip_install_options | default('') }}
-  register: install_packages
-  until: install_packages is success
-  retries: 5
-  delay: 2
-  when: panko_get_venv | failed or panko_get_venv | skipped
-
-- name: CentOS remove python from path first
-  file:
-    path:  "{{ panko_bin | dirname }}/bin/python2.7"
-    state: "absent"
+- name: Ensure remote wheel building is disabled in developer mode
+  set_fact:
+    venv_build_host: "{{ ansible_hostname }}"
   when:
-    - ansible_pkg_mgr in ['yum', 'dnf']
-    - panko_get_venv  is changed
+    - panko_developer_mode | bool
 
-# NOTE(odyssey4me):
-# We reinitialize the venv to ensure that the right
-# version of python is in the venv, but we do not
-# want virtualenv to also replace pip, setuptools
-# and wheel so we tell it not to.
-# We do not use --always-copy for CentOS/SuSE due
-# to https://github.com/pypa/virtualenv/issues/565
-- name: Reset virtualenv and update its paths
-  shell: |
-    find {{ panko_bin }} -name \*.pyc -delete
-    sed -si '1s/^.*python.*$/#!{{ panko_bin | replace ('/','\/') }}\/python/' {{ panko_bin }}/*
-    virtualenv {{ panko_bin | dirname }} \
-        {{ (ansible_pkg_mgr == 'apt') | ternary('--always-copy', '') }} \
-        --no-pip \
-        --no-setuptools \
-        --no-wheel
-  when: panko_get_venv  is changed
-  tags:
-    - skip_ansible_lint
-
-- name: Record the venv tag deployed
-  ini_file:
-    dest: "/etc/ansible/facts.d/openstack_ansible.fact"
-    section: panko
-    option: venv_tag
-    value: "{{ panko_venv_tag }}"
+- name: Install the python venv
+  include_role:
+    name: "python_venv_build"
+    private: yes
+  vars:
+    venv_build_distro_package_list: "{{ panko_devel_distro_packages }}"
+    venv_install_destination_path: "{{ panko_bin | dirname }}"
+    venv_install_distro_package_list: "{{ panko_distro_packages }}"
+    venv_pip_install_args: "{{ panko_pip_install_args }}"
+    venv_pip_packages: "{{ panko_pip_packages }}"
+    venv_facts_when_changed:
+      - section: "panko"
+        option: "venv_tag"
+        value: "{{ panko_venv_tag }}"

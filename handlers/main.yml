@@ -21,6 +21,9 @@
     group: "{{ panko_system_group_name }}"
     mode: "0640"
     remote_src: yes
+  listen:
+    - "Restart web server"
+    - "venv changed"
 
 - name: Restart web server
   service:
@@ -32,3 +35,5 @@
   until: _restart is success
   retries: 5
   delay: 2
+  listen:
+    - "venv changed"
