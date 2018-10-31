@@ -1,5 +1,5 @@
 OpenStack panko
-##############
+###############
 
 contributor guidelines
 ^^^^^^^^^^^^^^^^^^^^^^
