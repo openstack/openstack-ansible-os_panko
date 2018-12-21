@@ -11,11 +11,13 @@ connection = {{ panko_connection_string }}
 [keystone_authtoken]
 auth_type = {{ panko_keystone_auth_plugin }}
 auth_url = {{ keystone_service_adminurl }}
+www_authenticate_uri = {{ keystone_service_internaluri }}
 project_domain_name = {{ panko_service_project_domain_id }}
 user_domain_name = {{ panko_service_user_domain_id }}
 project_name = {{ panko_service_project_name }}
 username = {{ panko_service_user_name }}
 password = {{ panko_service_password }}
+insecure = {{ keystone_service_internaluri_insecure | bool }}
 
 memcached_servers = {{ memcached_servers }}
 
