@@ -108,6 +108,13 @@ panko_service_adminurl: "{{ panko_service_adminuri }}"
 
 panko_service_in_ldap: false
 
+# Panko expirer
+# TTL in seconds
+panko_event_time_to_live: -1
+# Any of the following special times are valid:
+#   reboot, yearly, annually, monthly, weekly, daily, hourly
+panko_expirer_job_time: daily
+
 # Common pip packages
 panko_pip_packages:
   - alembic>=0.7.2
