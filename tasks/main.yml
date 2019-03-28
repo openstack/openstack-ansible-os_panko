@@ -32,28 +32,41 @@
   tags:
     - always
 
-- include_tasks: panko_pre_install.yml
+- import_tasks: panko_pre_install.yml
   tags:
     - panko-install
 
-- include_tasks: panko_install.yml
+- name: Install the python venv
+  import_role:
+    name: "python_venv_build"
+  vars:
+    venv_build_constraints: "{{ panko_git_constraints }}"
+    venv_build_distro_package_list: "{{ panko_devel_distro_packages }}"
+    venv_install_destination_path: "{{ panko_bin | dirname }}"
+    venv_install_distro_package_list: "{{ panko_distro_packages }}"
+    venv_pip_install_args: "{{ panko_pip_install_args }}"
+    venv_pip_packages: "{{ panko_pip_packages }}"
+    venv_facts_when_changed:
+      - section: "panko"
+        option: "venv_tag"
+        value: "{{ panko_venv_tag }}"
   tags:
     - panko-install
 
-- include_tasks: panko_post_install.yml
+- import_tasks: panko_post_install.yml
   tags:
     - panko-config
 
-- include_tasks: panko_db_setup.yml
+- import_tasks: panko_db_setup.yml
   when: inventory_hostname == groups['panko_all'][0]
   tags:
     - panko-config
 
-- include_tasks: panko_apache.yml
+- import_tasks: panko_apache.yml
   tags:
     - panko-config
 
-- include_tasks: panko_service_setup.yml
+- import_tasks: panko_service_setup.yml
   when: inventory_hostname == groups['panko_api'][0]
   tags:
     - panko-config

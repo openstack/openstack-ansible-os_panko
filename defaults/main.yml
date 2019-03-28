@@ -25,37 +25,21 @@ panko_service_setup_host_python_interpreter: "{{ openstack_service_setup_host_py
 panko_package_state: "latest"
 panko_pip_package_state: "latest"
 
-## Toggle developer mode
-panko_developer_mode: false
-
 ## The git source/branch
 panko_git_repo: https://git.openstack.org/openstack/panko
 panko_git_install_branch: master
 
-## The packages to build from source (used in developer mode)
-panko_developer_constraints:
+## The packages to build from source
+panko_upper_constraints_url: "{{ requirements_git_url | default('https://git.openstack.org/cgit/openstack/requirements/plain/upper-constraints.txt?h=' ~ requirements_git_install_branch | default('master')) }}"
+panko_git_constraints:
   - "git+{{ panko_git_repo }}@{{ panko_git_install_branch }}#egg=panko"
+  - "--constraint {{ panko_upper_constraints_url }}"
 
-# TODO(odyssey4me):
-# This can be simplified once all the roles are using
-# python_venv_build. We can then switch to using a
-# set of constraints in pip.conf inside the venv,
-# perhaps prepared by giving a giving a list of
-# constraints to the role.
-panko_pip_install_args: >-
-  {{ panko_developer_mode | ternary(pip_install_developer_constraints | default('--constraint /opt/developer-pip-constraints.txt'), '') }}
-  {{ (pip_install_upper_constraints is defined) | ternary('--constraint ' + pip_install_upper_constraints | default(''), '') }}
-  {{ pip_install_options | default('') }}
+panko_pip_install_args: "{{ pip_install_options | default('') }}"
 
 # Name of the virtual env to deploy into
 panko_venv_tag: "{{ venv_tag | default('untagged') }}"
 panko_bin: "/openstack/venvs/panko-{{ panko_venv_tag }}/bin"
-
-# venv_download, even when true, will use the fallback method of building the
-# venv from scratch if the venv download fails.
-panko_venv_download: "{{ not panko_developer_mode | bool }}"
-# URL of the pre-built virtualenv
-panko_venv_download_url: http://127.0.0.1/venvs/untagged/ubuntu/panko.tgz
 
 ## System info
 panko_system_user_name: panko

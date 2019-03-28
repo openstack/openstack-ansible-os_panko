@@ -16,7 +16,6 @@
 panko_container_db_password: "secrete"
 panko_db_address: "{{ test_galera_host }}"
 panko_venv_tag: "testing"
-panko_developer_mode: true
 panko_service_password: "secrete"
 panko_service_publicuri: "{{ panko_service_proto }}://{{ hostvars[groups['panko_all'][0]]['ansible_host'] }}:{{ panko_service_port }}"
 panko_service_internaluri: "{{ panko_service_proto }}://{{ hostvars[groups['panko_all'][0]]['ansible_host'] }}:{{ panko_service_port }}"
