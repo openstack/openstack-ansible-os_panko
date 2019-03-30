@@ -1,4 +1,0 @@
-#panko service
-panko_git_repo: https://git.openstack.org/openstack/panko
-panko_git_install_branch: master
-panko_git_project_group: panko_all
