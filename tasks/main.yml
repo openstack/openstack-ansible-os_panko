@@ -32,6 +32,20 @@
   tags:
     - always
 
+- import_tasks: db_setup.yml
+  when:
+    - inventory_hostname == groups['panko_all'][0]
+  vars:
+    _oslodb_setup_host: "{{ panko_db_setup_host }}"
+    _oslodb_databases:
+      - name: "{{ panko_database_name }}"
+        users:
+          - username: "{{ panko_database_user }}"
+            password: "{{ panko_container_db_password }}"
+  tags:
+    - common-db
+    - panko-config
+
 - import_tasks: panko_pre_install.yml
   tags:
     - panko-install
@@ -57,7 +71,7 @@
   tags:
     - panko-config
 
-- import_tasks: panko_db_setup.yml
+- import_tasks: panko_db_sync.yml
   when: inventory_hostname == groups['panko_all'][0]
   tags:
     - panko-config
