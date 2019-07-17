@@ -112,8 +112,8 @@ panko_pip_packages:
   - python-memcached
   - sqlalchemy>=0.9.7
   - sqlalchemy-utils
+  - systemd-python
   - warlock
-
 
 
 panko_required_secrets:

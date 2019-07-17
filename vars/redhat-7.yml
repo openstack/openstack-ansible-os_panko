@@ -27,6 +27,7 @@ panko_distro_packages:
 
 panko_devel_distro_packages:
   - git
+  - systemd-devel
 
 panko_system_service_name: httpd
 

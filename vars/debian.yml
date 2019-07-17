@@ -29,6 +29,7 @@ panko_distro_packages:
 
 panko_devel_distro_packages:
   - git
+  - libsystemd-dev
 
 panko_system_service_name: apache2
 
