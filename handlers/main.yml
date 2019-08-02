@@ -13,6 +13,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+- name: Stop services
+  service:
+    name: "{{ item.value.service_name }}"
+    enabled: yes
+    state: "stopped"
+    daemon_reload: yes
+  with_dict: "{{ panko_services }}"
+  when:
+    - "item.value.group in group_names"
+    - item.value.service_enabled | bool
+  register: _stop
+  until: _stop is success
+  retries: 5
+  delay: 2
+  listen:
+    - "Restart panko services"
+    - "venv changed"
+
+# Note (odyssey4me):
+# The policy.json file is currently read continually by the services
+# and is not only read on service start. We therefore cannot template
+# directly to the file read by the service because the new policies
+# may not be valid until the service restarts. This is particularly
+# important during a major upgrade. We therefore only put the policy
+# file in place after the service has been stopped.
+#
 - name: Copy new policy file into place
   copy:
     src: "/etc/panko/policy.json-{{ panko_venv_tag }}"
@@ -22,18 +48,33 @@
     mode: "0640"
     remote_src: yes
   listen:
-    - "Restart web server"
+    - "Restart panko services"
     - "venv changed"
 
+- name: Start services
+  service:
+    name: "{{ item.value.service_name }}"
+    enabled: yes
+    state: "started"
+    daemon_reload: yes
+  with_dict: "{{ panko_services }}"
+  when:
+    - "item.value.group in group_names"
+    - item.value.service_enabled | bool
+  register: _start
+  until: _start is success
+  retries: 5
+  delay: 2
+  listen:
+    - "Restart panko services"
+    - "venv changed"
+
+# NOTE(noonedeadpunk): This task is created due to migration from apache to uwsgi
+# which was introduced during train release. It can be dropped afterwards.
 - name: Restart web server
   service:
     name: "{{ panko_system_service_name }}"
     enabled: yes
     state: "restarted"
     daemon_reload: "{{ (ansible_service_mgr == 'systemd') | ternary('yes', omit) }}"
-  register: _restart
-  until: _restart is success
-  retries: 5
-  delay: 2
-  listen:
-    - "venv changed"
+  failed_when: false

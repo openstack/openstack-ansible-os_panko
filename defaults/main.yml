@@ -57,10 +57,8 @@ panko_db_address: "{{ galera_address | default('127.0.0.1') }}"
 panko_connection_string: "{{ panko_db_type }}://{{ panko_database_user }}:{{ panko_container_db_password }}@{{ panko_db_address }}/{{ panko_database_name }}?charset=utf8"
 
 
-## Apache setup
-panko_apache_log_level: info
-panko_apache_servertokens: "Prod"
-panko_apache_serversignature: "Off"
+## uWSGI setup
+panko_api_init_overrides: {}
 panko_wsgi_threads: 10
 panko_wsgi_processes_max: 16
 panko_wsgi_processes: "{{ [[ansible_processor_vcpus|default(1), 1] | max * 2, panko_wsgi_processes_max] | min }}"
@@ -72,6 +70,7 @@ panko_role_name: admin
 panko_service_region: RegionOne
 panko_service_endpoint_type: internalURL
 panko_service_name: panko
+panko_service_address: 0.0.0.0
 panko_service_port: 8777
 panko_service_proto: http
 panko_service_type: event
@@ -99,6 +98,15 @@ panko_event_time_to_live: -1
 #   reboot, yearly, annually, monthly, weekly, daily, hourly
 panko_expirer_job_time: daily
 
+panko_services:
+  panko-api:
+    group: "panko_api"
+    service_name: "panko-api"
+    service_enabled: true
+    config_overrides: "{{ panko_api_init_overrides }}"
+    execstarts: "{{ panko_bin }}/uwsgi --autoload --ini /etc/uwsgi/panko-api.ini"
+    execreloads: "{{ panko_bin }}/uwsgi --reload /var/run/panko-api/panko-api.pid"
+
 # Common pip packages
 panko_pip_packages:
   - alembic>=0.7.2
@@ -108,11 +116,11 @@ panko_pip_packages:
   - osprofiler
   - panko
   - PyMySQL>=0.6.2
-  - python-ceilometerclient
   - python-memcached
   - sqlalchemy>=0.9.7
   - sqlalchemy-utils
   - systemd-python
+  - uwsgi
   - warlock
 
 
@@ -133,3 +141,4 @@ panko_role_project_group: panko_all
 panko_policy_overrides: {}
 panko_panko_conf_overrides: {}
 panko_api_paste_ini_overrides: {}
+panko_uwsgi_conf_overrides: {}

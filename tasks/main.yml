@@ -71,12 +71,43 @@
   tags:
     - panko-config
 
-- import_tasks: panko_db_sync.yml
-  when: inventory_hostname == groups['panko_all'][0]
+- name: Run the systemd service role
+  import_role:
+    name: systemd_service
+  vars:
+    systemd_user_name: "{{ panko_system_user_name }}"
+    systemd_group_name: "{{ panko_system_group_name }}"
+    systemd_tempd_prefix: openstack
+    systemd_slice_name: panko
+    systemd_lock_path: /var/lock/panko
+    systemd_CPUAccounting: true
+    systemd_BlockIOAccounting: true
+    systemd_MemoryAccounting: true
+    systemd_TasksAccounting: true
+    systemd_services: |-
+      {% set services = [] %}
+      {% for name, service in panko_services.items() %}
+      {%   if (service['group'] in group_names) and
+           (('service_enabled' not in service) or
+           ('service_enabled' in service and service['service_enabled'])) %}
+      {%     set _ = service.update(
+           {
+             'service_key': name,
+             'enabled': 'yes',
+             'state': 'started',
+           }
+         )
+      %}
+      {%     set _ = services.append(service) %}
+      {%   endif %}
+      {% endfor %}
+      {{ services }}
   tags:
     - panko-config
+    - systemd-service
 
-- import_tasks: panko_apache.yml
+- import_tasks: panko_db_sync.yml
+  when: inventory_hostname == groups['panko_all'][0]
   tags:
     - panko-config
 

@@ -17,9 +17,6 @@
 # Common packages
 panko_distro_packages:
   - rpcbind
-  - apache2
-  - apache2-utils
-  - apache2-mod_wsgi
   - libffi-devel
   - libopenssl-devel
   - libxml2-devel
@@ -30,22 +27,9 @@ panko_devel_distro_packages:
   - git-core
   - systemd-devel
 
+# NOTE(noonedeadpunk): These variables are left for migration from apache to uwsgi
+# which was introduced during train release. They can be dropped afterwards.
 panko_system_service_name: apache2
-
 panko_apache_config:
-  - { src: "panko-ports.conf.j2", dest: "/etc/apache2/conf.d/ports.conf" }
-  - { src: "panko-httpd.conf.j2", dest: "/etc/apache2/conf.d/panko-httpd.conf" }
-
-panko_apache_default_sites:
-  - "/etc/apache2/conf.d/gitweb.conf"
-
-panko_apache_conf: "/etc/apache2/httpd.conf"
-panko_apache_security_conf: "{{ panko_apache_conf }}"
-
-panko_apache_modules:
-  - name: "authz_host"
-    state: "present"
-  - name: "access_compat"
-    state: "present"
-  - name: "version"
-    state: "present"
+  -  "/etc/apache2/conf.d/panko-httpd.conf"
+panko_apache_ports: /etc/apache2/conf.d/ports.conf

@@ -42,14 +42,4 @@
     - { path: "{{ panko_system_user_home }}" }
     - { path: "{{ panko_system_user_home }}/.ssh", mode: "0700" }
     - { path: "/var/cache/panko", mode: "0700" }
-
-- name: Create Apache mod_wsgi dirs
-  file:
-    path: "{{ item.path }}"
-    state: directory
-    owner: "{{ item.owner|default(panko_system_user_name) }}"
-    group: "{{ item.group|default(panko_system_group_name) }}"
-    mode: "{{ item.mode|default('0755') }}"
-  with_items:
-    - { path: "/var/www/cgi-bin", owner: root, group: root }
-    - { path: "/var/www/cgi-bin/panko" }
+    - { path: "/var/run/panko-api" }

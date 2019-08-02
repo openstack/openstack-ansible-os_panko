@@ -16,9 +16,6 @@
 # Common packages
 panko_distro_packages:
   - rpcbind
-  - httpd
-  - httpd-tools
-  - mod_wsgi
   - libffi-devel
   - openssl-devel
   - libxml2-devel
@@ -29,17 +26,9 @@ panko_devel_distro_packages:
   - git
   - systemd-devel
 
+# NOTE(noonedeadpunk): These variables are left for migration from apache to uwsgi
+# which was introduced during train release. They can be dropped afterwards.
 panko_system_service_name: httpd
-
 panko_apache_config:
-  - { src: "panko-ports.conf.j2", dest: "/etc/httpd/conf.d/ports.conf" }
-  - { src: "panko-httpd.conf.j2", dest: "/etc/httpd/conf.d/panko-httpd.conf" }
-
-panko_apache_default_sites:
-  - "/etc/httpd/conf.d/userdir.conf"
-  - "/etc/httpd/conf.d/welcome.conf"
-  - "/etc/httpd/conf.d/ssl.conf"
-
-panko_apache_conf: "/etc/httpd/conf/httpd.conf"
-panko_apache_security_conf: "{{ panko_apache_conf }}"
-
+  - "/etc/httpd/conf.d/panko-httpd.conf"
+panko_apache_ports: "/etc/httpd/conf.d/ports.conf"

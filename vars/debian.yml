@@ -19,9 +19,6 @@ cache_timeout: 600
 # Common apt packages
 panko_distro_packages:
   - rpcbind
-  - apache2
-  - apache2-utils
-  - libapache2-mod-wsgi
   - libffi-dev
   - libssl-dev
   - libxml2-dev
@@ -31,18 +28,10 @@ panko_devel_distro_packages:
   - git
   - libsystemd-dev
 
+# NOTE(noonedeadpunk): These variables are left for migration from apache to uwsgi
+# which was introduced during train release. They can be dropped afterwards.
 panko_system_service_name: apache2
-
 panko_apache_config:
-  - { src: "panko-ports.conf.j2", dest: "/etc/apache2/ports.conf" }
-  - { src: "panko-httpd.conf.j2", dest: "/etc/apache2/sites-available/panko-httpd.conf" }
-
-panko_apache_default_sites:
-  - "/etc/apache2/sites-enabled/000-default.conf"
-
-panko_apache_site_available: "/etc/apache2/sites-available/panko-httpd.conf"
-panko_apache_site_enabled: "/etc/apache2/sites-enabled/panko-httpd.conf"
-
-panko_apache_conf: "/etc/apache2/apache2.conf"
-panko_apache_security_conf: "/etc/apache2/conf-available/security.conf"
-
+  - "/etc/apache2/sites-available/panko-httpd.conf"
+  - "/etc/apache2/sites-enabled/panko-httpd.conf"
+panko_apache_ports: "/etc/apache2/ports.conf"

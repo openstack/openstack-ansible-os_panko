@@ -36,17 +36,43 @@
       config_overrides: "{{ panko_policy_overrides }}"
       config_type: "json"
   notify:
-    - Restart web server
+    - Restart panko services
 
-- name: Drop panko API WSGI Configs
-  template:
-    src: panko-api-wsgi.py.j2
-    dest: /var/www/cgi-bin/panko/panko-api
-    owner: "{{ panko_system_user_name }}"
-    group: "{{ panko_system_group_name }}"
-    mode: "0755"
+- name: Configurng uWSGI
+  block:
+    - name: Ensure uWSGI directory exists
+      file:
+        path: "/etc/uwsgi/"
+        state: directory
+        mode: "0711"
+    - name: Apply uWSGI configuration
+      config_template:
+        src: "panko-uwsgi.ini.j2"
+        dest: "/etc/uwsgi/panko-api.ini"
+        mode: "0644"
+        config_overrides: "{{ panko_uwsgi_conf_overrides }}"
+        config_type: ini
+      notify:
+        - Restart panko services
+  when: "'panko_api' in group_names"
+
+# NOTE(noonedeadpunk): This task is created due to migration from apache to uwsgi
+# which was introduced during train release. It can be dropped afterwards.
+- name: Drop Apache related configs
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items: "{{ panko_apache_config }}"
   notify:
-    - Restart web server
+   - Restart web server
+
+- name: Stop Apache listening on Panko port
+  lineinfile:
+    path: "{{ panko_apache_ports }}"
+    state: absent
+    line: "Listen {{ panko_service_port }}"
+  notify:
+   - Restart web server
 
 - name: Create cron job for panko event expirer
   cron:
