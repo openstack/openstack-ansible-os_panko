@@ -111,7 +111,32 @@
   tags:
     - panko-config
 
-- import_tasks: panko_service_setup.yml
+- import_tasks: service_setup.yml
+  vars:
+    _service_adminuri_insecure: "{{ keystone_service_adminuri_insecure }}"
+    _service_in_ldap: "{{ panko_service_in_ldap }}"
+    _service_setup_host: "{{ panko_service_setup_host }}"
+    _service_setup_host_python_interpreter: "{{ panko_service_setup_host_python_interpreter }}"
+    _service_project_name: "{{ panko_service_tenant_name }}"
+    _service_region: "{{ panko_service_region }}"
+    _service_users:
+      - name: "{{ panko_service_user_name }}"
+        password: "{{ panko_service_password }}"
+        role: "{{ panko_role_name }}"
+    _service_endpoints:
+      - service: "{{ panko_service_name }}"
+        interface: "public"
+        url: "{{ panko_service_publicurl }}"
+      - service: "{{ panko_service_name }}"
+        interface: "internal"
+        url: "{{ panko_service_internalurl }}"
+      - service: "{{ panko_service_name }}"
+        interface: "admin"
+        url: "{{ panko_service_adminurl }}"
+    _service_catalog:
+      - name: "{{ panko_service_name }}"
+        type: "{{ panko_service_type }}"
+        description: "{{ panko_service_description }}"
   when: inventory_hostname == groups['panko_api'][0]
   tags:
     - panko-config
