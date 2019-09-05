@@ -37,24 +37,7 @@
       config_type: "json"
   notify:
     - Restart panko services
-
-- name: Configurng uWSGI
-  block:
-    - name: Ensure uWSGI directory exists
-      file:
-        path: "/etc/uwsgi/"
-        state: directory
-        mode: "0711"
-    - name: Apply uWSGI configuration
-      config_template:
-        src: "panko-uwsgi.ini.j2"
-        dest: "/etc/uwsgi/panko-api.ini"
-        mode: "0644"
-        config_overrides: "{{ panko_uwsgi_conf_overrides }}"
-        config_type: ini
-      notify:
-        - Restart panko services
-  when: "'panko_api' in group_names"
+    - Restart uwsgi services
 
 # NOTE(noonedeadpunk): This task is created due to migration from apache to uwsgi
 # which was introduced during train release. It can be dropped afterwards.

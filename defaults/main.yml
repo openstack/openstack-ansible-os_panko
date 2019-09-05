@@ -104,8 +104,11 @@ panko_services:
     service_name: "panko-api"
     service_enabled: true
     config_overrides: "{{ panko_api_init_overrides }}"
-    execstarts: "{{ panko_bin }}/uwsgi --autoload --ini /etc/uwsgi/panko-api.ini"
-    execreloads: "{{ panko_bin }}/uwsgi --reload /var/run/panko-api/panko-api.pid"
+    wsgi_app: True
+    wsgi_path: "{{  panko_bin | dirname }}/panko-api"
+    uwsgi_overrides: "{{ panko_uwsgi_conf_overrides }}"
+    uwsgi_port: "{{ panko_service_port }}"
+    uwsgi_bind_address: "{{ panko_service_address }}"
 
 # Common pip packages
 panko_pip_packages:
@@ -120,9 +123,7 @@ panko_pip_packages:
   - sqlalchemy>=0.9.7
   - sqlalchemy-utils
   - systemd-python
-  - uwsgi
   - warlock
-
 
 panko_required_secrets:
   - memcached_encryption_key
