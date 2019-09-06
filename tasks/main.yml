@@ -84,24 +84,7 @@
     systemd_BlockIOAccounting: true
     systemd_MemoryAccounting: true
     systemd_TasksAccounting: true
-    systemd_services: |-
-      {% set services = [] %}
-      {% for name, service in panko_services.items() %}
-      {%   if (service['group'] in group_names) and
-           (('service_enabled' not in service) or
-           ('service_enabled' in service and service['service_enabled'])) %}
-      {%     set _ = service.update(
-           {
-             'service_key': name,
-             'enabled': 'yes',
-             'state': 'started',
-           }
-         )
-      %}
-      {%     set _ = services.append(service) %}
-      {%   endif %}
-      {% endfor %}
-      {{ services }}
+    systemd_services: "{{ filtered_panko_services }}"
   tags:
     - panko-config
     - systemd-service
@@ -110,6 +93,16 @@
   when: inventory_hostname == groups['panko_all'][0]
   tags:
     - panko-config
+
+- name: Import uwsgi role
+  import_role:
+    name: uwsgi
+  vars:
+    uwsgi_services: "{{ uwsgi_panko_services }}"
+    uwsgi_install_method: "source"
+  tags:
+    - panko-config
+    - uwsgi
 
 - import_tasks: service_setup.yml
   vars:

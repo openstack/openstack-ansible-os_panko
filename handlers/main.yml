@@ -19,7 +19,7 @@
     enabled: yes
     state: "stopped"
     daemon_reload: yes
-  with_dict: "{{ panko_services }}"
+  with_dict: "{{ filtered_panko_services }}"
   when:
     - "item.value.group in group_names"
     - item.value.service_enabled | bool
@@ -57,7 +57,7 @@
     enabled: yes
     state: "started"
     daemon_reload: yes
-  with_dict: "{{ panko_services }}"
+  with_dict: "{{ filtered_panko_services }}"
   when:
     - "item.value.group in group_names"
     - item.value.service_enabled | bool
