@@ -54,6 +54,7 @@
   import_role:
     name: "python_venv_build"
   vars:
+    venv_python_executable: "{{ panko_venv_python_executable }}"
     venv_build_constraints: "{{ panko_git_constraints }}"
     venv_build_distro_package_list: "{{ panko_devel_distro_packages }}"
     venv_install_destination_path: "{{ panko_bin | dirname }}"
