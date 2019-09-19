@@ -73,7 +73,7 @@ panko_role_name: admin
 panko_service_region: RegionOne
 panko_service_endpoint_type: internalURL
 panko_service_name: panko
-panko_service_address: 0.0.0.0
+panko_service_address: "{{ openstack_service_bind_address | default('0.0.0.0') }}"
 panko_service_port: 8777
 panko_service_proto: http
 panko_service_type: event
