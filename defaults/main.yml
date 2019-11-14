@@ -29,11 +29,11 @@ panko_package_state: "latest"
 panko_pip_package_state: "latest"
 
 ## The git source/branch
-panko_git_repo: https://git.openstack.org/openstack/panko
+panko_git_repo: https://opendev.org/openstack/panko
 panko_git_install_branch: master
 
 ## The packages to build from source
-panko_upper_constraints_url: "{{ requirements_git_url | default('https://git.openstack.org/cgit/openstack/requirements/plain/upper-constraints.txt?h=' ~ requirements_git_install_branch | default('master')) }}"
+panko_upper_constraints_url: "{{ requirements_git_url | default('https://releases.openstack.org/constraints/upper/' ~ requirements_git_install_branch | default('master')) }}"
 panko_git_constraints:
   - "git+{{ panko_git_repo }}@{{ panko_git_install_branch }}#egg=panko"
   - "--constraint {{ panko_upper_constraints_url }}"
