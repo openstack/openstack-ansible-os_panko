@@ -122,11 +122,15 @@ panko_pip_packages:
   - osprofiler
   - panko
   - PyMySQL>=0.6.2
+  - pymemcache
   - python-memcached
   - sqlalchemy>=0.9.7
   - sqlalchemy-utils
   - systemd-python
   - warlock
+
+# Memcached override
+panko_memcached_servers: "{{ memcached_servers }}"
 
 panko_required_secrets:
   - memcached_encryption_key
