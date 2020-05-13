@@ -139,12 +139,6 @@ panko_required_secrets:
 
 install_test_packages: False
 
-# This variable is used by the repo_build process to determine
-# which host group to check for members of before building the
-# pip packages required by this role. The value is picked up
-# by the py_pkgs lookup.
-panko_role_project_group: panko_all
-
 ## Tunable overrides
 panko_policy_overrides: {}
 panko_panko_conf_overrides: {}
