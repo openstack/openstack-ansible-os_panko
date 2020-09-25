@@ -34,7 +34,7 @@
 
 - import_tasks: db_setup.yml
   when:
-    - inventory_hostname == groups['panko_all'][0]
+    - _panko_is_first_play_host
   vars:
     _oslodb_setup_host: "{{ panko_db_setup_host }}"
     _oslodb_ansible_python_interpreter: "{{ panko_db_setup_python_interpreter }}"
@@ -94,7 +94,7 @@
     - systemd-service
 
 - import_tasks: panko_db_sync.yml
-  when: inventory_hostname == groups['panko_all'][0]
+  when: _panko_is_first_play_host
   tags:
     - panko-config
 
@@ -134,6 +134,6 @@
       - name: "{{ panko_service_name }}"
         type: "{{ panko_service_type }}"
         description: "{{ panko_service_description }}"
-  when: inventory_hostname == groups['panko_api'][0]
+  when: _panko_is_first_play_host
   tags:
     - panko-config

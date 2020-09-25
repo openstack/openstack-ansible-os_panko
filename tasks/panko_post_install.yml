@@ -64,5 +64,5 @@
     specialtime: "{{ panko_expirer_job_time }}"
     job: "{{ panko_bin }}/panko-expirer"
   when:
-    - inventory_hostname == groups['panko_all'][0]
+    - _panko_is_first_play_host
     - panko_event_time_to_live > 0
