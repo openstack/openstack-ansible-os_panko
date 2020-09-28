@@ -52,12 +52,14 @@ panko_system_comment: panko system user
 panko_system_user_home: "/var/lib/{{ panko_system_user_name }}"
 
 ## DB info
-panko_db_setup_host: "{{ ('galera_all' in groups) | ternary(groups['galera_all'][0], 'localhost') }}"
+panko_db_setup_host: "{{ openstack_db_setup_host | default('localhost') }}"
+panko_db_setup_python_interpreter: "{{ openstack_db_setup_python_interpreter | default((panko_db_setup_host == 'localhost') | ternary(ansible_playbook_python, ansible_python['executable'])) }}"
 panko_database_name: panko
 panko_database_user: panko
 panko_db_type: "mysql+pymysql"
 panko_db_address: "{{ galera_address | default('127.0.0.1') }}"
 panko_connection_string: "{{ panko_db_type }}://{{ panko_database_user }}:{{ panko_container_db_password }}@{{ panko_db_address }}/{{ panko_database_name }}?charset=utf8"
+panko_galera_port: 3306
 
 
 ## uWSGI setup

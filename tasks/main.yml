@@ -37,6 +37,9 @@
     - inventory_hostname == groups['panko_all'][0]
   vars:
     _oslodb_setup_host: "{{ panko_db_setup_host }}"
+    _oslodb_ansible_python_interpreter: "{{ panko_db_setup_python_interpreter }}"
+    _oslodb_setup_endpoint: "{{ panko_db_address }}"
+    _oslodb_setup_port: "{{ panko_galera_port }}"
     _oslodb_databases:
       - name: "{{ panko_database_name }}"
         users:
