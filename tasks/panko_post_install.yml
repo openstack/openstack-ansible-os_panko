@@ -39,24 +39,6 @@
     - Restart panko services
     - Restart uwsgi services
 
-# NOTE(noonedeadpunk): This task is created due to migration from apache to uwsgi
-# which was introduced during train release. It can be dropped afterwards.
-- name: Drop Apache related configs
-  file:
-    path: "{{ item }}"
-    state: absent
-  with_items: "{{ panko_apache_config }}"
-  notify:
-   - Restart web server
-
-- name: Stop Apache listening on Panko port
-  lineinfile:
-    path: "{{ panko_apache_ports }}"
-    state: absent
-    line: "Listen {{ panko_service_port }}"
-  notify:
-   - Restart web server
-
 - name: Create cron job for panko event expirer
   cron:
     name: "Purge old panko events"
