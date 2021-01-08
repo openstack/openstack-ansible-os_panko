@@ -23,10 +23,9 @@ panko_venv_python_executable: "{{ openstack_venv_python_executable | default('py
 panko_service_setup_host: "{{ openstack_service_setup_host | default('localhost') }}"
 panko_service_setup_host_python_interpreter: "{{ openstack_service_setup_host_python_interpreter | default((panko_service_setup_host == 'localhost') | ternary(ansible_playbook_python, ansible_python['executable'])) }}"
 
-# Set the package install state for distribution and pip packages
+# Set the package install state for distribution packages
 # Options are 'present' and 'latest'
-panko_package_state: "latest"
-panko_pip_package_state: "latest"
+panko_package_state: "{{ package_state | default('latest') }}"
 
 ## The git source/branch
 panko_git_repo: https://opendev.org/openstack/panko
@@ -59,7 +58,7 @@ panko_database_user: panko
 panko_db_type: "mysql+pymysql"
 panko_db_address: "{{ galera_address | default('127.0.0.1') }}"
 panko_connection_string: "{{ panko_db_type }}://{{ panko_database_user }}:{{ panko_container_db_password }}@{{ panko_db_address }}/{{ panko_database_name }}?charset=utf8"
-panko_galera_port: 3306
+panko_galera_port: "{{ galera_port | default('3306') }}"
 
 
 ## uWSGI setup
@@ -72,7 +71,7 @@ panko_wsgi_processes: "{{ [[(ansible_processor_vcpus//ansible_processor_threads_
 panko_role_name: admin
 
 ## Service Type and Data
-panko_service_region: RegionOne
+panko_service_region: "{{ service_region | default('RegionOne') }}"
 panko_service_endpoint_type: internalURL
 panko_service_name: panko
 panko_service_address: "{{ openstack_service_bind_address | default('0.0.0.0') }}"
@@ -94,7 +93,7 @@ panko_service_internalurl: "{{ panko_service_internaluri }}"
 panko_service_adminuri: "{{ panko_service_proto }}://{{ internal_lb_vip_address }}:{{ panko_service_port }}"
 panko_service_adminurl: "{{ panko_service_adminuri }}"
 
-panko_service_in_ldap: false
+panko_service_in_ldap: "{{ service_ldap_backend_enabled | default(False) }}"
 
 # Panko expirer
 # TTL in seconds
