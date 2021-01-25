@@ -34,7 +34,6 @@ panko_git_install_branch: master
 ## The packages to build from source
 panko_upper_constraints_url: "{{ requirements_git_url | default('https://releases.openstack.org/constraints/upper/' ~ requirements_git_install_branch | default('master')) }}"
 panko_git_constraints:
-  - "git+{{ panko_git_repo }}@{{ panko_git_install_branch }}#egg=panko"
   - "--constraint {{ panko_upper_constraints_url }}"
 
 panko_pip_install_args: "{{ pip_install_options | default('') }}"
@@ -116,16 +115,16 @@ panko_services:
 
 # Common pip packages
 panko_pip_packages:
-  - alembic>=0.7.2
+  - alembic
   - ceilometermiddleware
   - cryptography
   - gnocchiclient
   - osprofiler
-  - panko
-  - PyMySQL>=0.6.2
+  - "git+{{ panko_git_repo }}@{{ panko_git_install_branch }}#egg=panko"
+  - PyMySQL
   - pymemcache
   - python-memcached
-  - sqlalchemy>=0.9.7
+  - sqlalchemy
   - sqlalchemy-utils
   - systemd-python
   - warlock
