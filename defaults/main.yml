@@ -21,7 +21,7 @@ panko_venv_python_executable: "{{ openstack_venv_python_executable | default('py
 # for the service setup. The host must already have
 # clouds.yaml properly configured.
 panko_service_setup_host: "{{ openstack_service_setup_host | default('localhost') }}"
-panko_service_setup_host_python_interpreter: "{{ openstack_service_setup_host_python_interpreter | default((panko_service_setup_host == 'localhost') | ternary(ansible_playbook_python, ansible_python['executable'])) }}"
+panko_service_setup_host_python_interpreter: "{{ openstack_service_setup_host_python_interpreter | default((panko_service_setup_host == 'localhost') | ternary(ansible_playbook_python, ansible_facts['python']['executable'])) }}"
 
 # Set the package install state for distribution packages
 # Options are 'present' and 'latest'
@@ -51,7 +51,7 @@ panko_system_user_home: "/var/lib/{{ panko_system_user_name }}"
 
 ## DB info
 panko_db_setup_host: "{{ openstack_db_setup_host | default('localhost') }}"
-panko_db_setup_python_interpreter: "{{ openstack_db_setup_python_interpreter | default((panko_db_setup_host == 'localhost') | ternary(ansible_playbook_python, ansible_python['executable'])) }}"
+panko_db_setup_python_interpreter: "{{ openstack_db_setup_python_interpreter | default((panko_db_setup_host == 'localhost') | ternary(ansible_playbook_python, ansible_facts['python']['executable'])) }}"
 panko_database_name: panko
 panko_database_user: panko
 panko_db_type: "mysql+pymysql"
@@ -64,7 +64,7 @@ panko_galera_port: "{{ galera_port | default('3306') }}"
 panko_api_init_overrides: {}
 panko_wsgi_threads: 10
 panko_wsgi_processes_max: 16
-panko_wsgi_processes: "{{ [[(ansible_processor_vcpus//ansible_processor_threads_per_core)|default(1), 1] | max * 2, panko_wsgi_processes_max] | min }}"
+panko_wsgi_processes: "{{ [[(ansible_facts['processor_vcpus']//ansible_facts['processor_threads_per_core'])|default(1), 1] | max * 2, panko_wsgi_processes_max] | min }}"
 
 #panko services info
 panko_role_name: admin

@@ -76,5 +76,5 @@
     name: "{{ panko_system_service_name }}"
     enabled: yes
     state: "restarted"
-    daemon_reload: "{{ (ansible_service_mgr == 'systemd') | ternary('yes', omit) }}"
+    daemon_reload: yes
   failed_when: false
