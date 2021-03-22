@@ -31,13 +31,31 @@
       dest: "/etc/panko/api_paste.ini"
       config_overrides: "{{ panko_api_paste_ini_overrides }}"
       config_type: "ini"
-    - src: "policy.json.j2"
-      dest: "/etc/panko/policy.json-{{ panko_venv_tag }}"
-      config_overrides: "{{ panko_policy_overrides }}"
-      config_type: "json"
   notify:
     - Restart panko services
     - Restart uwsgi services
+
+- name: Implement policy.yaml if there are overrides configured
+  config_template:
+    content: "{{ panko_policy_overrides }}"
+    dest: "/etc/panko/policy.yaml"
+    owner: "{{ panko_system_user_name }}"
+    group: "{{ panko_system_group_name }}"
+    mode: "0644"
+    config_type: "yaml"
+  when:
+    - panko_policy_overrides | length > 0
+  tags:
+    - panko-policy-override
+
+- name: Remove legacy policy.yaml file
+  file:
+    path: "/etc/panko/policy.yaml"
+    state: absent
+  when:
+    - panko_policy_overrides | length == 0
+  tags:
+    - panko-policy-override
 
 - name: Create cron job for panko event expirer
   cron:
