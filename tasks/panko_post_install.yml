@@ -43,7 +43,7 @@
   cron:
     name: "Purge old panko events"
     user: "{{ panko_system_user_name }}"
-    specialtime: "{{ panko_expirer_job_time }}"
+    special_time: "{{ panko_expirer_job_time }}"
     job: "{{ panko_bin }}/panko-expirer"
   when:
     - _panko_is_first_play_host
