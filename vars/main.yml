@@ -41,7 +41,7 @@ uwsgi_panko_services: |-
          and ('wsgi_app' in service and service['wsgi_app']) %}
   {%     set _ = service.update(
             {
-             'wsgi_venv': panko_bin,
+             'wsgi_venv': panko_bin | dirname,
              'uwsgi_uid': panko_system_user_name,
              'uwsgi_guid': panko_system_group_name,
              'uwsgi_processes': panko_wsgi_processes,
