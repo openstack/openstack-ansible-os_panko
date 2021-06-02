@@ -110,7 +110,7 @@ panko_services:
     service_enabled: true
     config_overrides: "{{ panko_api_init_overrides }}"
     wsgi_app: True
-    wsgi_path: "{{  panko_bin | dirname }}/panko-api"
+    wsgi_path: "{{ panko_bin }}/panko-api"
     uwsgi_overrides: "{{ panko_uwsgi_conf_overrides }}"
     uwsgi_port: "{{ panko_service_port }}"
     uwsgi_bind_address: "{{ panko_service_address }}"
