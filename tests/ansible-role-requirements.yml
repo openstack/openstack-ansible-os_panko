@@ -2,52 +2,52 @@
 - name: apt_package_pinning
   src: https://opendev.org/openstack/openstack-ansible-apt_package_pinning
   scm: git
-  version: master
+  version: stable/ussuri
 - name: memcached_server
   src: https://opendev.org/openstack/openstack-ansible-memcached_server
   scm: git
-  version: master
+  version: stable/ussuri
 - name: openstack_hosts
   src: https://opendev.org/openstack/openstack-ansible-openstack_hosts
   scm: git
-  version: master
+  version: stable/ussuri
 - name: lxc_hosts
   src: https://opendev.org/openstack/openstack-ansible-lxc_hosts
   scm: git
-  version: master
+  version: stable/ussuri
 - name: lxc_container_create
   src: https://opendev.org/openstack/openstack-ansible-lxc_container_create
   scm: git
-  version: master
+  version: stable/ussuri
 - name: galera_client
   src: https://opendev.org/openstack/openstack-ansible-galera_client
   scm: git
-  version: master
+  version: stable/ussuri
 - name: galera_server
   src: https://opendev.org/openstack/openstack-ansible-galera_server
   scm: git
-  version: master
+  version: stable/ussuri
 - name: rabbitmq_server
   src: https://opendev.org/openstack/openstack-ansible-rabbitmq_server
   scm: git
-  version: master
+  version: stable/ussuri
 - name: os_keystone
   src: https://opendev.org/openstack/openstack-ansible-os_keystone
   scm: git
-  version: master
+  version: stable/ussuri
 - name: openstack_openrc
   src: https://opendev.org/openstack/openstack-ansible-openstack_openrc
   scm: git
-  version: master
+  version: stable/ussuri
 - name: systemd_service
   src: https://opendev.org/openstack/ansible-role-systemd_service
   scm: git
-  version: master
+  version: stable/ussuri
 - name: python_venv_build
   src: https://opendev.org/openstack/ansible-role-python_venv_build
   scm: git
-  version: master
+  version: stable/ussuri
 - name: uwsgi
   src: https://opendev.org/openstack/ansible-role-uwsgi
   scm: git
-  version: master
+  version: stable/ussuri
